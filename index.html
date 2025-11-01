@@ -93,44 +93,40 @@
       // Глобальная переменная для iframe
       let submitted = false;
 
+      // ФУНКЦИЯ, КОТОРАЯ ДОЛЖНА ПОКАЗЫВАТЬ/СКРЫВАТЬ ПОЛЕ
       function toggleHoursField() {
-        // ... (Оставь код toggleHoursField() как есть)
         const selectedOption = document.querySelector(
           'input[name="status"]:checked'
         ).value;
         const hoursField = document.getElementById("hours-group");
+
+        // Добавлено: Защита от случая, когда элемент 'hours-group' не найден
+        if (!hoursField) {
+          console.error("Элемент 'hours-group' не найден!");
+          return;
+        }
+
+        // Поле показывается, если выбрано "ОП" ИЛИ "ПП"
         hoursField.style.display =
           selectedOption === "ОП" || selectedOption === "ПП" ? "block" : "none";
       }
 
-        // Форматирование
-        if (value.length === 1 || value.length === 2) {
-          input.value = value + ":00"; // Формат чч:мм
-        } else {
-          const hours = value.slice(0, value.length - 2) || "0"; // Часы
-          const minutes = value.slice(value.length - 2).padStart(2, "0"); // Минуты
-          input.value = `${hours}:${minutes}`;
-        }
-      }
-
       // НОВАЯ ФУНКЦИЯ для обработки нажатия кнопки
       function submitForm() {
-        // Устанавливаем флаг, что форма отправлена
         submitted = true;
-        // Отправляем форму (она попадет в скрытый iframe)
         document.getElementById("reportForm").submit();
 
-        // Блокируем кнопку и меняем текст
         const button = document.querySelector('button[type="submit"]');
         button.textContent = "Отправка...";
         button.disabled = true;
 
-        // Возвращаем кнопку в исходное состояние через 5 секунд (на случай ошибки или медленной сети)
         setTimeout(() => {
           button.textContent = "Отправить";
           button.disabled = false;
         }, 5000);
       }
+
+      // ВЫЗОВ ФУНКЦИИ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
       document.addEventListener("DOMContentLoaded", toggleHoursField);
     </script>
   </head>
