@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчёт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .inline-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .inline-group div {
+            text-align: center;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-option label {
+            margin: 0 0 0 5px;
+        }
+
+        select, input[type="number"], input[type="text"], input[type="time"] {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .hours-group {
+            display: none;
+        }
+
+        /* Стили для чекбокса и подписи "Участвовал" */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            transform: scale(2); /* Увеличение размера чекбокса в 2 раза */
+        }
+
+        .checkbox-group label {
+            font-weight: bold;
+            font-size: 16pt;
+        }
+    </style>
+    <script>
+        function toggleHoursField() {
+            const selectedOption = document.querySelector('input[name="status"]:checked').value;
+            const hoursField = document.getElementById('hours-group');
+            hoursField.style.display = (selectedOption === "ОП" || selectedOption === "ПП") ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+    <h2 style="text-align: center;">Отчёт</h2>
+    <form action="#" method="post">
+        
+        <div class="inline-group">
+            <div>
+                <select id="month" name="month" required>
+                    <option value="" disabled selected>Выберите месяц</option>
+                    <option value="Январь">Январь</option>
+                    <option value="Февраль">Февраль</option>
+                    <option value="Март">Март</option>
+                    <option value="Апрель">Апрель</option>
+                    <option value="Май">Май</option>
+                    <option value="Июнь">Июнь</option>
+                    <option value="Июль">Июль</option>
+                    <option value="Август">Август</option>
+                    <option value="Сентябрь">Сентябрь</option>
+                    <option value="Октябрь">Октябрь</option>
+                    <option value="Ноябрь">Ноябрь</option>
+                    <option value="Декабрь">Декабрь</option>
+                </select>
+                <label for="month">Месяц</label>
+            </div>
+
+            <div>
+                <input type="number" id="year" name="year" required>
+                <label for="year">Год</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="lastName" name="lastName" required>
+            <label for="lastName">Фамилия</label>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="firstName" name="firstName" required>
+            <label for="firstName">Имя</label>
+        </div>
+
+        <div class="checkbox-group form-group">
+            <input type="checkbox" id="participated" name="participated">
+            <label for="participated">Участвовал</label>
+        </div>
+
+        <div class="radio-group">
+            <div class="radio-option">
+                <input type="radio" id="op" name="status" value="ОП" onclick="toggleHoursField()">
+                <label for="op">ОП</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="pp" name="status" value="ПП" onclick="toggleHoursField()">
+                <label for="pp">ПП</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="publisher" name="status" value="Возвещатель" onclick="toggleHoursField()" checked>
+                <label for="publisher">Возвещатель</label>
+            </div>
+        </div>
+
+		<div class="form-group hours-group" id="hours-group">
+            <input type="text" id="hours" name="hours" placeholder="чч:мм" pattern="\d{1,2}:\d{2}" required>
+            <label for="hours">Часы</label>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</body>
+</html>
