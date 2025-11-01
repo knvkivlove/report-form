@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Отчёт</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 5px;
+        font-size: 16px;
+      }
+
+      .inline-group {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .radio-group {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+      }
+
+      .radio-option label {
+        margin: 0 0 0 5px;
+      }
+
+      select,
+      input[type="number"],
+      input[type="text"] {
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 15px;
+      }
+
+      .hours-group {
+        display: none;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        transform: scale(2); /* Увеличение размера чекбокса в 2 раза */
+      }
+
+      .checkbox-group label {
+        font-weight: bold;
+        font-size: 16pt;
+      }
+    </style>
+    <script>
+      function toggleHoursField() {
+        const selectedOption = document.querySelector(
+          'input[name="status"]:checked'
+        ).value;
+        const hoursField = document.getElementById("hours-group");
+        hoursField.style.display =
+          selectedOption === "ОП" || selectedOption === "ПП" ? "block" : "none";
+      }
+
+      function formatHours(input) {
+        let value = input.value.replace(/\D/g, ""); // Удаление нецифровых символов
+        if (value.length === 0) {
+          input.value = "";
+          return;
+        }
+
+        // Форматирование
+        if (value.length === 1 || value.length === 2) {
+          input.value = value + ":00"; // Формат чч:мм
+        } else {
+          const hours = value.slice(0, value.length - 2) || "0"; // Часы
+          const minutes = value.slice(value.length - 2).padStart(2, "0"); // Минуты
+          input.value = `${hours}:${minutes}`;
+        }
+      }
+      // --- Вставь этот код ПОСЛЕ функции formatHours(),
+      // --- но ПЕРЕД закрывающим тегом ---
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function (e) {
+          // 1. Отменяем стандартную отправку формы
+          e.preventDefault();
+
+          // 2. ВСТАВЬ СВОЙ URL СЮДА!
+          const SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbwIje7--KzFqEL17wEsWgQkaCHHCqe7pOeR3RV_hhv61Y1IBSE8w14DA0-aIVpFlaEkRQ/exec";
+
+          // 3. Собираем данные из полей формы
+          const formData = {
+            month: document.getElementById("month").value,
+            year: document.getElementById("year").value,
+            lastName: document.getElementById("lastName").value,
+            // Чекбокс 'participated' отправляет 'true' или 'false'
+            participated: document.getElementById("participated").checked,
+            // 'status' берем из выбранной радио-кнопки
+            status: document.querySelector('input[name="status"]:checked')
+              .value,
+            // 'hours' берем, даже если поле пустое (будет "")
+            hours: document.getElementById("hours").value,
+          };
+
+          // 4. Показываем "загрузчик" на кнопке, чтобы было понятно, что идет отправка
+          const submitButton = form.querySelector('button[type="submit"]');
+          const originalButtonText = submitButton.textContent;
+          submitButton.textContent = "Отправка...";
+          submitButton.disabled = true;
+
+          // 5. Отправляем данные в Google Apps Script
+          fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "cors", // Важно для междоменных запросов
+            cache: "no-cache",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Перенаправляем как 'follow', чтобы скрипт мог обработать редирект
+            redirect: "follow",
+            // Превращаем наш объект JS в строку JSON
+            body: JSON.stringify(formData),
+          })
+            .then((response) => response.json()) // Ждем ответ от сервера в формате JSON
+            .then((data) => {
+              // 6. Обрабатываем успешный ответ
+              if (data.result === "success") {
+                alert("Отчет успешно отправлен!");
+                form.reset(); // Очищаем форму
+                // Также скроем поле "Часы", если оно было открыто
+                document.getElementById("hours-group").style.display = "none";
+              } else {
+                // 6.1. Обрабатываем ошибку, которую вернул наш скрипт
+                throw new Error(
+                  data.message || "Неизвестная ошибка при отправке."
+                );
+              }
+            })
+            .catch((error) => {
+              // 6.2. Обрабатываем ошибку сети (например, нет интернета)
+              console.error("Ошибка!", error);
+              alert("Ошибка при отправке: " + error.message);
+            })
+            .finally(() => {
+              // 7. В любом случае возвращаем кнопку в исходное состояние
+              submitButton.textContent = originalButtonText;
+              submitButton.disabled = false;
+            });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h2 style="text-align: center">Отчёт</h2>
+    <form action="#" method="post">
+      <div class="inline-group">
+        <div>
+          <select id="month" name="month" required>
+            <option value="" disabled selected>Выберите месяц</option>
+            <option value="Январь">Январь</option>
+            <option value="Февраль">Февраль</option>
+            <option value="Март">Март</option>
+            <option value="Апрель">Апрель</option>
+            <option value="Май">Май</option>
+            <option value="Июнь">Июнь</option>
+            <option value="Июль">Июль</option>
+            <option value="Август">Август</option>
+            <option value="Сентябрь">Сентябрь</option>
+            <option value="Октябрь">Октябрь</option>
+            <option value="Ноябрь">Ноябрь</option>
+            <option value="Декабрь">Декабрь</option>
+          </select>
+          <label for="month">Месяц</label>
+        </div>
+
+        <div>
+          <input type="number" id="year" name="year" required />
+          <label for="year">Год</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          list="lastNames"
+          required
+        />
+        <label for="lastName">Фамилия Имя</label>
+        <datalist id="lastNames">
+          <option value="Бережанская Светлана"></option>
+          <option value="Бухаленко Вера"></option>
+          <option value="Воронкова Елена"></option>
+          <option value="Гаркуша Ольга"></option>
+          <option value="Герман Даниил"></option>
+          <option value="Глущенко Татьяна"></option>
+          <option value="Гринькова Инна"></option>
+          <option value="Гура Людмила"></option>
+          <option value="Данченко Вера"></option>
+          <option value="Дедова Любовь"></option>
+          <option value="Демидчук Людмила"></option>
+          <option value="Долгих Надежда"></option>
+          <option value="Доценко Вера"></option>
+          <option value="Дубовик Мария"></option>
+          <option value="Запорожец Анна"></option>
+          <option value="Иргалеева Нина"></option>
+          <option value="Калинец Наталья"></option>
+          <option value="Кисель Светлана"></option>
+          <option value="Клименко Анжела"></option>
+          <option value="Ковалёва Виолетта"></option>
+          <option value="Ковалёва Ольга"></option>
+          <option value="Ковтун Вера"></option>
+          <option value="Колесник Ольга"></option>
+          <option value="Колодяжный Владимир"></option>
+          <option value="Колтовская Екатерина"></option>
+          <option value="Корнеев Иван"></option>
+          <option value="Корнеева Галина"></option>
+          <option value="Криворучко Виталий"></option>
+          <option value="Криворучко Ира"></option>
+          <option value="Кузнецова Людмила"></option>
+          <option value="Кучеренко Александр"></option>
+          <option value="Кучеренко Юлия"></option>
+          <option value="Кучма Виктория"></option>
+          <option value="Литвинова Ольга"></option>
+          <option value="Мамедов Николай"></option>
+          <option value="Мамченко Оксана"></option>
+          <option value="Манько Виктор"></option>
+          <option value="Манько Татьяна"></option>
+          <option value="Медведев Валерий"></option>
+          <option value="Медведева Надежда"></option>
+          <option value="Мельник Светлана"></option>
+          <option value="Милютина Оксана"></option>
+          <option value="Мухина Ольга"></option>
+          <option value="Назаренко Алла"></option>
+          <option value="Ногова Ирина"></option>
+          <option value="Овсюк Алёна"></option>
+          <option value="Орлова Светлана"></option>
+          <option value="Пархомчук Лилия"></option>
+          <option value="Пасечник Тамара"></option>
+          <option value="Пивень Валентина"></option>
+          <option value="Полтавец Алина"></option>
+          <option value="Полтавец Анна"></option>
+          <option value="Полтавец Владислав"></option>
+          <option value="Полтавец Елена"></option>
+          <option value="Полтавец Илья"></option>
+          <option value="Посыльная Галина"></option>
+          <option value="Работа Татьяна"></option>
+          <option value="Романько Алёна"></option>
+          <option value="Сагайдачная Любовь"></option>
+          <option value="Салева Екатерина"></option>
+          <option value="Сидельник Тамара"></option>
+          <option value="Скиба Людмила"></option>
+          <option value="Соболь Анатолий"></option>
+          <option value="Соснина Любовь"></option>
+          <option value="Стеблина Владимир"></option>
+          <option value="Стручевская Нина"></option>
+          <option value="Терновая Серафима"></option>
+          <option value="Тимошинов Олег"></option>
+          <option value="Тимошинова Татьяна"></option>
+          <option value="Тищенко Людмила"></option>
+          <option value="Третьяк Елена"></option>
+          <option value="Унгул Нина"></option>
+          <option value="Файн Ирина"></option>
+          <option value="Харченко Виктор"></option>
+          <option value="Харченко Елена"></option>
+          <option value="Харченко Наталья"></option>
+          <option value="Хомут Андрей"></option>
+          <option value="Хомут Виталий"></option>
+          <option value="Хомут Ольга"></option>
+          <option value="Чекмарёва Ия"></option>
+          <option value="Чёрная Валентина"></option>
+          <option value="Чернышева Валида"></option>
+          <option value="Чупрова Нина"></option>
+          <option value="Шило Екатерина"></option>
+          <option value="Щитова Людмила"></option>
+          <option value="Ющишина Алла"></option>
+          <!-- Дополните список до 100 фамилий -->
+        </datalist>
+      </div>
+
+      <div class="checkbox-group form-group">
+        <input type="checkbox" id="participated" name="participated" />
+        <label for="participated">Участвовал в служении</label>
+      </div>
+
+      <div class="radio-group">
+        <div class="radio-option">
+          <input
+            type="radio"
+            id="op"
+            name="status"
+            value="ОП"
+            onclick="toggleHoursField()"
+          />
+          <label for="op">ОП</label>
+        </div>
+        <div class="radio-option">
+          <input
+            type="radio"
+            id="pp"
+            name="status"
+            value="ПП"
+            onclick="toggleHoursField()"
+          />
+          <label for="pp">ПП</label>
+        </div>
+        <div class="radio-option">
+          <input
+            type="radio"
+            id="publisher"
+            name="status"
+            value="Возвещатель"
+            onclick="toggleHoursField()"
+            checked
+          />
+          <label for="publisher">Возвещатель</label>
+        </div>
+      </div>
+
+      <div class="form-group hours-group" id="hours-group">
+        <input
+          type="text"
+          id="hours"
+          name="hours"
+          placeholder="чч:мм"
+          required
+          onblur="formatHours(this)"
+        />
+        <label for="hours">Часы</label>
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Отправить</button>
+      </div>
+    </form>
+  </body>
+</html>
