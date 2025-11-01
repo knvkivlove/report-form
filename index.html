@@ -103,14 +103,6 @@
           selectedOption === "ОП" || selectedOption === "ПП" ? "block" : "none";
       }
 
-      function formatHours(input) {
-        // ... (Оставь код formatHours() как есть)
-        let value = input.value.replace(/\D/g, ""); // Удаление нецифровых символов
-        if (value.length === 0) {
-          input.value = "";
-          return;
-        }
-
         // Форматирование
         if (value.length === 1 || value.length === 2) {
           input.value = value + ":00"; // Формат чч:мм
@@ -193,7 +185,6 @@
           <option value="Глущенко Татьяна"></option>
           <option value="Гринькова Инна"></option>
           <option value="Гура Людмила"></option>
-          <option value="Данченко Вера"></option>
           <option value="Дедова Любовь"></option>
           <option value="Демидчук Людмила"></option>
           <option value="Долгих Надежда"></option>
@@ -316,13 +307,14 @@
 
       <div class="form-group hours-group" id="hours-group">
         <input
-          type="text"
+          type="number"
           id="hours"
           name="hours"
-          placeholder="чч:мм"
-          onblur="formatHours(this)"
+          placeholder="Введите целое число часов"
+          min="0"
+          step="1"
         />
-        <label for="hours">Часы</label>
+        <label for="hours">Часы (целое число)</label>
       </div>
 
       <div class="form-group">
