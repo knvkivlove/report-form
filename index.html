@@ -90,7 +90,11 @@
       }
     </style>
     <script>
+      // Глобальная переменная для iframe
+      let submitted = false;
+
       function toggleHoursField() {
+        // ... (Оставь код toggleHoursField() как есть)
         const selectedOption = document.querySelector(
           'input[name="status"]:checked'
         ).value;
@@ -100,6 +104,7 @@
       }
 
       function formatHours(input) {
+        // ... (Оставь код formatHours() как есть)
         let value = input.value.replace(/\D/g, ""); // Удаление нецифровых символов
         if (value.length === 0) {
           input.value = "";
@@ -115,83 +120,35 @@
           input.value = `${hours}:${minutes}`;
         }
       }
-      // --- Вставь этот код ПОСЛЕ функции formatHours(),
-      // --- но ПЕРЕД закрывающим тегом ---
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector("form");
-        form.addEventListener("submit", function (e) {
-          // 1. Отменяем стандартную отправку формы
-          e.preventDefault();
 
-          // 2. ВСТАВЬ СВОЙ URL СЮДА!
-          const SCRIPT_URL =
-            "https://script.google.com/macros/s/AKfycbwIje7--KzFqEL17wEsWgQkaCHHCqe7pOeR3RV_hhv61Y1IBSE8w14DA0-aIVpFlaEkRQ/exec";
+      // НОВАЯ ФУНКЦИЯ для обработки нажатия кнопки
+      function submitForm() {
+        // Устанавливаем флаг, что форма отправлена
+        submitted = true;
+        // Отправляем форму (она попадет в скрытый iframe)
+        document.getElementById("reportForm").submit();
 
-          // 3. Собираем данные из полей формы
-          const formData = {
-            month: document.getElementById("month").value,
-            year: document.getElementById("year").value,
-            lastName: document.getElementById("lastName").value,
-            // Чекбокс 'participated' отправляет 'true' или 'false'
-            participated: document.getElementById("participated").checked,
-            // 'status' берем из выбранной радио-кнопки
-            status: document.querySelector('input[name="status"]:checked')
-              .value,
-            // 'hours' берем, даже если поле пустое (будет "")
-            hours: document.getElementById("hours").value,
-          };
+        // Блокируем кнопку и меняем текст
+        const button = document.querySelector('button[type="submit"]');
+        button.textContent = "Отправка...";
+        button.disabled = true;
 
-          // 4. Показываем "загрузчик" на кнопке, чтобы было понятно, что идет отправка
-          const submitButton = form.querySelector('button[type="submit"]');
-          const originalButtonText = submitButton.textContent;
-          submitButton.textContent = "Отправка...";
-          submitButton.disabled = true;
-
-          // 5. Отправляем данные в Google Apps Script
-          fetch(SCRIPT_URL, {
-            method: "POST",
-            mode: "cors", // Важно для междоменных запросов
-            cache: "no-cache",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            // Перенаправляем как 'follow', чтобы скрипт мог обработать редирект
-            redirect: "follow",
-            // Превращаем наш объект JS в строку JSON
-            body: JSON.stringify(formData),
-          })
-            .then((response) => response.json()) // Ждем ответ от сервера в формате JSON
-            .then((data) => {
-              // 6. Обрабатываем успешный ответ
-              if (data.result === "success") {
-                alert("Отчет успешно отправлен!");
-                form.reset(); // Очищаем форму
-                // Также скроем поле "Часы", если оно было открыто
-                document.getElementById("hours-group").style.display = "none";
-              } else {
-                // 6.1. Обрабатываем ошибку, которую вернул наш скрипт
-                throw new Error(
-                  data.message || "Неизвестная ошибка при отправке."
-                );
-              }
-            })
-            .catch((error) => {
-              // 6.2. Обрабатываем ошибку сети (например, нет интернета)
-              console.error("Ошибка!", error);
-              alert("Ошибка при отправке: " + error.message);
-            })
-            .finally(() => {
-              // 7. В любом случае возвращаем кнопку в исходное состояние
-              submitButton.textContent = originalButtonText;
-              submitButton.disabled = false;
-            });
-        });
-      });
+        // Возвращаем кнопку в исходное состояние через 5 секунд (на случай ошибки или медленной сети)
+        setTimeout(() => {
+          button.textContent = "Отправить";
+          button.disabled = false;
+        }, 5000);
+      }
     </script>
   </head>
   <body>
     <h2 style="text-align: center">Отчёт</h2>
-    <form action="#" method="post">
+    <form
+      id="reportForm"
+      action="https://script.google.com/macros/s/AKfycbwIje7--KzFqEL17wEsWgQkaCHHCqe7pOeR3RV_hhv61Y1IBSE8w14DA0-aIVpFlaEkRQ/exec"
+      method="POST"
+      target="hidden_iframe"
+    >
       <div class="inline-group">
         <div>
           <select id="month" name="month" required>
@@ -369,8 +326,14 @@
       </div>
 
       <div class="form-group">
-        <button type="submit">Отправить</button>
+        <button type="submit" onclick="submitForm()">Отправить</button>
       </div>
     </form>
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display: none"
+      onload="if(submitted) {alert('Отчет успешно отправлен!'); document.getElementById('reportForm').reset(); document.getElementById('hours-group').style.display = 'none'; submitted = false;}"
+    ></iframe>
   </body>
 </html>
