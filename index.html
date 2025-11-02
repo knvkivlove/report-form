@@ -175,11 +175,13 @@
         <label for="lastName">Фамилия Имя</label>
         <datalist id="lastNames">
           <option value="Бережанская Светлана"></option>
+          <option value="Бондарь Алёна"></option>
           <option value="Бухаленко Вера"></option>
           <option value="Воронкова Елена"></option>
           <option value="Гаркуша Ольга"></option>
           <option value="Герман Даниил"></option>
           <option value="Глущенко Татьяна"></option>
+          <option value="Гнатченко Нинель"></option>
           <option value="Гринькова Инна"></option>
           <option value="Гура Людмила"></option>
           <option value="Дедова Любовь"></option>
@@ -187,9 +189,13 @@
           <option value="Долгих Надежда"></option>
           <option value="Доценко Вера"></option>
           <option value="Дубовик Мария"></option>
+          <option value="Жилина Екатерина"></option>
           <option value="Запорожец Анна"></option>
+          <option value="Зотчик Валентина"></option>
           <option value="Иргалеева Нина"></option>
+          <option value="Каблукова Раиса"></option>
           <option value="Калинец Наталья"></option>
+          <option value="Киндерева Лидия"></option>
           <option value="Кисель Светлана"></option>
           <option value="Клименко Анжела"></option>
           <option value="Ковалёва Виолетта"></option>
@@ -200,15 +206,18 @@
           <option value="Колтовская Екатерина"></option>
           <option value="Корнеев Иван"></option>
           <option value="Корнеева Галина"></option>
+          <option value="Корнеева Галина_2"></option>
           <option value="Криворучко Виталий"></option>
           <option value="Криворучко Ира"></option>
+          <option value="Куделя Лариса"></option>
           <option value="Кузнецова Людмила"></option>
           <option value="Кучеренко Александр"></option>
           <option value="Кучеренко Юлия"></option>
           <option value="Кучма Виктория"></option>
           <option value="Литвинова Ольга"></option>
+          <option value="Лысенко Валерий"></option>
+          <option value="Лысенко Тамара"></option>
           <option value="Мамедов Николай"></option>
-          <option value="Мамченко Оксана"></option>
           <option value="Манько Виктор"></option>
           <option value="Манько Татьяна"></option>
           <option value="Медведев Валерий"></option>
@@ -223,6 +232,7 @@
           <option value="Пархомчук Лилия"></option>
           <option value="Пасечник Тамара"></option>
           <option value="Пивень Валентина"></option>
+          <option value="Погребняк Любовь"></option>
           <option value="Полтавец Алина"></option>
           <option value="Полтавец Анна"></option>
           <option value="Полтавец Владислав"></option>
@@ -233,17 +243,19 @@
           <option value="Романько Алёна"></option>
           <option value="Сагайдачная Любовь"></option>
           <option value="Салева Екатерина"></option>
+          <option value="Санькова Светлана"></option>
           <option value="Сидельник Тамара"></option>
           <option value="Скиба Людмила"></option>
           <option value="Соболь Анатолий"></option>
           <option value="Соснина Любовь"></option>
-          <option value="Стеблина Владимир"></option>
           <option value="Стручевская Нина"></option>
           <option value="Терновая Серафима"></option>
           <option value="Тимошинов Олег"></option>
           <option value="Тимошинова Татьяна"></option>
           <option value="Тищенко Людмила"></option>
           <option value="Третьяк Елена"></option>
+          <option value="Трубицина Лариса"></option>
+          <option value="Трубицина Людмила"></option>
           <option value="Унгул Нина"></option>
           <option value="Файн Ирина"></option>
           <option value="Харченко Виктор"></option>
@@ -255,7 +267,6 @@
           <option value="Чекмарёва Ия"></option>
           <option value="Чёрная Валентина"></option>
           <option value="Чернышева Валида"></option>
-          <option value="Чупрова Нина"></option>
           <option value="Шило Екатерина"></option>
           <option value="Щитова Людмила"></option>
           <option value="Ющишина Алла"></option>
@@ -313,7 +324,28 @@
         />
         <label for="hours">Часы (целое число)</label>
       </div>
-
+      <div class="form-group">
+        <input
+          type="number"
+          id="bibleStudies"
+          name="bibleStudies"
+          placeholder="Количество изучений"
+          min="0"
+          step="1"
+          value="0"
+        />
+        <label for="bibleStudies">Изучения Библии</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="Введите ваш пароль"
+        />
+        <label for="password">Личный пароль для передачи отчета</label>
+      </div>
       <div class="form-group">
         <button type="submit" onclick="submitForm()">Отправить</button>
       </div>
