@@ -246,6 +246,37 @@
       // НОВАЯ ФУНКЦИЯ для обработки нажатия кнопки
       function submitForm() {
         submitted = true;
+
+        // 1. Сбор данных для сообщения об успехе
+        const month = document.getElementById("month").value;
+        const year = document.getElementById("year").value;
+        const participated = document.getElementById("participated").checked;
+        const bibleStudies =
+          document.getElementById("bibleStudies").value || "0";
+        const status = document.querySelector(
+          'input[name="status"]:checked'
+        ).value;
+        const hours =
+          document.getElementById("hours-group").style.display === "block"
+            ? document.getElementById("hours").value
+            : "";
+
+        // Формирование текста сообщения
+        let participationText = participated
+          ? "✅ Участвовал"
+          : "❌ Не участвовал";
+        let reportDetails = `Твой отчет за **${month}, ${year}** успешно отправлен!`;
+        let dataSummary = `
+        ${participationText} |
+        Изучения: **${bibleStudies}** | 
+        Статус: **${status}** ${hours ? `| Часы: **${hours}**` : ""}
+    `;
+
+        // Сохраняем данные для отображения в iframe
+        localStorage.setItem("reportDetails", reportDetails);
+        localStorage.setItem("dataSummary", dataSummary);
+
+        // 2. Блокируем кнопку и отправляем форму
         document.getElementById("reportForm").submit();
 
         const button = document.querySelector('button[type="submit"]');
@@ -483,11 +514,29 @@
         <button type="submit" onclick="submitForm()">Отправить</button>
       </div>
     </form>
-    <iframe
-      name="hidden_iframe"
-      id="hidden_iframe"
-      style="display: none"
-      onload="if(submitted) {alert('Отчет успешно отправлен!'); document.getElementById('reportForm').reset(); document.getElementById('hours-group').style.display = 'none'; submitted = false;}"
-    ></iframe>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" 
+    onload="if(submitted) {
+        // Получаем сохраненные данные
+        const details = localStorage.getItem('reportDetails');
+        const summary = localStorage.getItem('dataSummary');
+
+        // Создаем стилизованное сообщение
+        const message = `${details}
+
+        <div style='font-size: 1.1em; color: #333; margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px;'>${summary.replace(/\*\*/g, '<b>').replace(/\|/g, '<span style="color:#007bff; margin: 0 5px;">|</span>')}</div>
+
+        `;
+
+        // Показываем сообщение
+        alert(message.replace(/<br>/g, '\n').replace(/&nbsp;/g, ' '));
+
+        // Сброс и очистка
+        document.getElementById('reportForm').reset(); 
+        document.getElementById('hours-group').style.display = 'none'; 
+        submitted = false;
+        localStorage.removeItem('reportDetails');
+        localStorage.removeItem('dataSummary');
+    }"></iframe>
   </body>
 </html>
