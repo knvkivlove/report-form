@@ -143,6 +143,56 @@
       .hours-group {
         display: none;
       }
+      /* Стили для новых инлайн-полей */
+      .inline-group-30 {
+        /* Выравнивание по левому краю для компактных полей */
+        justify-content: flex-start;
+        gap: 20px;
+        margin-top: 15px; /* Немного отступ от чекбокса */
+      }
+
+      .inline-group-30 > div {
+        /* Задаем максимальную ширину для каждого поля */
+        max-width: 30%;
+        flex-grow: 0; /* Не растягиваем по умолчанию */
+        flex-shrink: 0;
+        text-align: left;
+      }
+
+      /* Адаптивность для маленьких экранов (телефоны) */
+      @media (max-width: 500px) {
+        /* Радио-кнопки в две строки */
+        .radio-group {
+          flex-direction: column; /* Размещаем в столбик */
+          align-items: flex-start; /* Выравниваем по левому краю */
+          gap: 10px; /* Уменьшаем вертикальный зазор */
+        }
+
+        /* Выделяем "Возвещатель" на отдельную строку, ПП и ОП на второй */
+        .radio-group > .radio-option:nth-child(3) {
+          /* Это "Возвещатель" */
+          order: -1; /* Ставим первым в колонке */
+          margin-bottom: 5px; /* Отступ от следующих */
+        }
+
+        .radio-group > .radio-option:nth-child(1),
+        .radio-group > .radio-option:nth-child(2) {
+          /* Группируем ОП и ПП */
+          margin-right: 20px;
+        }
+
+        .inline-group-30 {
+          /* На мобильных устройствах ставим компактные поля в столбик */
+          flex-direction: column;
+          gap: 15px;
+          /* На мобильных устройствах они должны быть чуть шире для удобства */
+          align-items: center;
+        }
+
+        .inline-group-30 > div {
+          max-width: 60%;
+        }
+      }
     </style>
     <script>
       // Глобальная переменная для iframe
@@ -333,18 +383,33 @@
         <input type="checkbox" id="participated" name="participated" />
         <label for="participated">Участвовал в служении</label>
       </div>
-      <div class="form-group">
-        <input
-          type="number"
-          id="bibleStudies"
-          name="bibleStudies"
-          placeholder="Количество изучений"
-          min="0"
-          step="1"
-          value="0"
-        />
-        <label for="bibleStudies">Изучения Библии</label>
+      <div class="inline-group inline-group-30">
+        <div>
+          <input
+            type="number"
+            id="bibleStudies"
+            name="bibleStudies"
+            placeholder="0"
+            min="0"
+            step="1"
+            value="0"
+          />
+          <label for="bibleStudies">Изучения Библии</label>
+        </div>
+
+        <div class="hours-group" id="hours-group">
+          <input
+            type="number"
+            id="hours"
+            name="hours"
+            placeholder="0"
+            min="0"
+            step="1"
+          />
+          <label for="hours">Часы (целое число)</label>
+        </div>
       </div>
+
       <div class="radio-group">
         <div class="radio-option">
           <input
@@ -377,18 +442,6 @@
           />
           <label for="publisher">Возвещатель</label>
         </div>
-      </div>
-
-      <div class="form-group hours-group" id="hours-group">
-        <input
-          type="number"
-          id="hours"
-          name="hours"
-          placeholder="Введите целое число часов"
-          min="0"
-          step="1"
-        />
-        <label for="hours">Часы (целое число)</label>
       </div>
 
       <div class="form-group">
