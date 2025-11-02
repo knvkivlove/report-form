@@ -38,7 +38,7 @@
       input[type="text"],
       input[type="password"] {
         padding: 10px;
-        width: 60%;
+        width: 100%;
         box-sizing: border-box;
         margin-top: 5px;
         border: 1px solid #ced4da;
@@ -102,7 +102,7 @@
 
       /* Стиль для большого чекбокса */
       .checkbox-group input[type="checkbox"] {
-        transform: scale(1.3); /* Немного уменьшим, чтобы было эстетичнее */
+        transform: scale(1.5);
         margin-right: 5px;
       }
 
@@ -110,7 +110,27 @@
         font-weight: bold;
         font-size: 16px;
         color: #212529;
-        user-select: none; /* чтобы не выделялся текст при клике */
+        user-select: none;
+      }
+
+      /* Новый стиль для поля Изучения Библии рядом с чекбоксом */
+      .inline-study {
+        display: flex; /* Важно, чтобы flex работал */
+        justify-content: center;
+        margin-top: -10px; /* Приподнять поле ближе к чекбоксу */
+      }
+
+      .inline-study > div {
+        max-width: 150px; /* Ограничиваем ширину для ПК (30% от 420px) */
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Стили для поля Часы */
+      .hours-group input[type="number"] {
+        max-width: 150px; /* Ограничиваем ширину поля, чтобы оно не было слишком широким */
+        margin-left: auto;
+        margin-right: auto;
       }
 
       /* Кнопка */
@@ -144,66 +164,38 @@
         display: none;
       }
 
-      /* Адаптивность для маленьких экранов (телефоны) */
+      /* ======================================================= */
+      /* Адаптивность для маленьких экранов (Медиа-запрос) */
+      /* ======================================================= */
       @media (max-width: 500px) {
-        /* Радио-кнопки в две строки */
-        .radio-group {
-          flex-direction: column; /* Размещаем в столбик */
-          align-items: flex-start; /* Выравниваем по левому краю */
-          gap: 10px; /* Уменьшаем вертикальный зазор */
+        /* Увеличение ширины поля ФИО */
+        input[type="text"] {
+          max-width: 90%; /* Позволяем полю ФИО быть шире */
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        /* Выделяем "Возвещатель" на отдельную строку, ПП и ОП на второй */
-        .radio-group > .radio-option:nth-child(3) {
-          /* Это "Возвещатель" */
-          order: -1; /* Ставим первым в колонке */
-          margin-bottom: 5px; /* Отступ от следующих */
-        }
-
-        .radio-group > .radio-option:nth-child(1),
-        .radio-group > .radio-option:nth-child(2) {
-          /* Группируем ОП и ПП */
-          margin-right: 20px;
-        }
-
-        .inline-group-30 {
-          /* На мобильных устройствах ставим компактные поля в столбик */
+        /* Поля Месяц/Год в столбик на мобильном */
+        .inline-group {
           flex-direction: column;
-          gap: 15px;
-          /* На мобильных устройствах они должны быть чуть шире для удобства */
-          align-items: center;
+          gap: 10px;
         }
 
-        .inline-group-30 > div {
-          max-width: 60%;
+        .inline-group > div {
+          width: 70%;
+          max-width: 70%;
+          margin-left: auto;
+          margin-right: auto;
         }
-      }
-      /* Новый стиль для поля Изучения Библии рядом с чекбоксом */
-      .inline-study {
-        justify-content: center;
-        margin-top: -10px; /* Приподнять поле ближе к чекбоксу */
-      }
 
-      .inline-study > div {
-        max-width: 150px; /* Достаточная ширина для ПК (около 30% от 420px) */
-        width: 100%;
-        text-align: center;
-      }
-
-      /* Исправление ширины input для часов на ПК (было слишком узко) */
-      .hours-group input[type="number"] {
-        max-width: 150px; /* Ограничиваем ширину поля, чтобы оно не было слишком широким */
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      /* Адаптивность для маленьких экранов (телефоны) */
-      @media (max-width: 500px) {
-        /* Радио-кнопки в столбик (оставляем, как было, но убираем лишнее) */
+        /* Радио-кнопки в столбик для лучшей читаемости */
         .radio-group {
           flex-direction: column;
           align-items: flex-start;
           gap: 10px;
+          width: 90%;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         /* Выделяем "Возвещатель" на отдельную строку */
@@ -218,12 +210,14 @@
           margin-right: 20px;
         }
 
+        /* Увеличение ширины поля Изучения Библии на мобильном */
         .inline-study > div {
-          max-width: 70%; /* Увеличиваем ширину поля на мобильном */
+          max-width: 70%;
         }
 
+        /* Увеличение ширины поля Часы на мобильном */
         .hours-group input[type="number"] {
-          max-width: 70%; /* Увеличиваем ширину поля на мобильном */
+          max-width: 70%;
         }
       }
     </style>
