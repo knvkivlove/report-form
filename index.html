@@ -259,18 +259,21 @@
         const hours =
           document.getElementById("hours-group").style.display === "block"
             ? document.getElementById("hours").value
-            : "";
+            : "0"; // Если часы не введены, ставим 0 для сообщения
 
-        // Формирование текста сообщения
+        // Формирование текста сообщения (без HTML-тегов)
         let participationText = participated
-          ? "✅ Участвовал"
-          : "❌ Не участвовал";
-        let reportDetails = `Твой отчет за **${month}, ${year}** успешно отправлен!`;
+          ? "Участвовал: ✅ Да"
+          : "Участвовал: ❌ Нет";
+
+        let reportDetails = `Отчет за ${month}, ${year} успешно отправлен!`;
+
         let dataSummary = `
-        ${participationText} |
-        Изучения: **${bibleStudies}** | 
-        Статус: **${status}** ${hours ? `| Часы: **${hours}**` : ""}
-    `;
+            ${participationText} 
+            Изучения: ${bibleStudies}
+            Статус: ${status}
+            Часы: ${hours}
+        `;
 
         // Сохраняем данные для отображения в iframe
         localStorage.setItem("reportDetails", reportDetails);
@@ -514,22 +517,27 @@
         <button type="submit" onclick="submitForm()">Отправить</button>
       </div>
     </form>
-
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" 
-    onload="if(submitted) {
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display: none"
+      onload="if(submitted) {
         // Получаем сохраненные данные
         const details = localStorage.getItem('reportDetails');
         const summary = localStorage.getItem('dataSummary');
 
-        // Создаем стилизованное сообщение
-        const message = `${details}
+        // Упрощаем сообщение для alert(), используя только символы новой строки (\n)
+        // Удаляем все HTML-теги и заменяем разделители на простой текст
+        let cleanSummary = summary
+            .replace(/<br>/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/\*\*/g, '') // Удаляем жирность (**)
+            .replace(/\|/g, ' | '); // Заменяем | на пробел|пробел
 
-        <div style='font-size: 1.1em; color: #333; margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 8px;'>${summary.replace(/\*\*/g, '<b>').replace(/\|/g, '<span style="color:#007bff; margin: 0 5px;">|</span>')}</div>
+        const finalMessage = details.replace(/\*\*/g, '') + '\n\nСводка:' + cleanSummary;
 
-        `;
-
-        // Показываем сообщение
-        alert(message.replace(/<br>/g, '\n').replace(/&nbsp;/g, ' '));
+        // Показываем сообщение и обрабатываем сброс формы
+        alert(finalMessage);
 
         // Сброс и очистка
         document.getElementById('reportForm').reset(); 
@@ -537,6 +545,7 @@
         submitted = false;
         localStorage.removeItem('reportDetails');
         localStorage.removeItem('dataSummary');
-    }"></iframe>
+    }"
+    ></iframe>
   </body>
 </html>
