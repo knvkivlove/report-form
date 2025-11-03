@@ -244,7 +244,12 @@
       }
 
       // НОВАЯ ФУНКЦИЯ для обработки нажатия кнопки
-      function submitForm() {
+      function submitForm(event) {
+        // Если браузерная валидация не прошла, эта функция не выполнится,
+        // но на всякий случай можно добавить:
+        if (!document.getElementById("reportForm").checkValidity()) {
+          return;
+        }
         submitted = true;
 
         // 1. Сбор данных для сообщения об успехе
@@ -303,6 +308,7 @@
       action="https://script.google.com/macros/s/AKfycbwIje7--KzFqEL17wEsWgQkaCHHCqe7pOeR3RV_hhv61Y1IBSE8w14DA0-aIVpFlaEkRQ/exec"
       method="POST"
       target="hidden_iframe"
+      onsubmit="submitForm(event)"
     >
       <div class="inline-group">
         <div>
@@ -514,7 +520,7 @@
         <label for="password">Личный пароль для передачи отчета</label>
       </div>
       <div class="form-group">
-        <button type="submit" onclick="submitForm()">Отправить</button>
+        <button type="submit">Отправить</button>
       </div>
     </form>
     <iframe
