@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Отчёт</title>
+    <title>Отчёт о служении</title>
     <style>
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -330,10 +330,18 @@
           <label for="month">Месяц</label>
         </div>
 
-        <div>
-          <input type="number" id="year" name="year" required />
-          <label for="year">Год</label>
-        </div>
+      <div>
+        <select id="year" name="year" required>
+            <option value="" disabled selected>Выберите год</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+        </select>
+        <label for="year">Год</label>
       </div>
 
       <div class="form-group">
